@@ -2,9 +2,9 @@
 
 ## see: https://www.youtube.com/watch?v=-OOnGK-XeVY
 
-DOMAIN=${DOMAIN:=techdope.io}
-USERNAME=${USERNAME:=gshipley}
-PASSWORD=${PASSWORD:=password}
+DOMAIN=${DOMAIN:=console.com}
+USERNAME=${USERNAME:=pritam}
+PASSWORD=${PASSWORD:=pritam}
 
 
 yum install -y epel-release
@@ -20,15 +20,15 @@ pip install -Iv ansible==2.3.0.0
 
 mkdir -p ~/workspace && cd ~/workspace
 git clone http://github.com/openshift/openshift-ansible
-git clone http://github.com/gshipley/installcentos
+git clone http://github.com/kpritam/installcentos
 
 cat <<EOD > /etc/hosts
-127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4 console console.${DOMAIN}
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4 openshift openshift.${DOMAIN}
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
 EOD
 
 cat /dev/zero | ssh-keygen -t rsa -q -N ""
-ssh-copy-id root@console.${DOMAIN}
+ssh-copy-id root@openshift.${DOMAIN}
 
 ######################################################################################
 ## THIS IS HIGHLY INSECURE AND ONLY ACCEPTABLE IN DEVELOPMENT
@@ -52,7 +52,7 @@ systemctl restart docker
 systemctl enable docker
 
 cd ~/workspace
-cat installcentos/inventory.erb | sed "s/techdope.io/${DOMAIN}/g" > /tmp/installcentos-inventory.erb
+cat installcentos/inventory.erb | sed "s/console.io/${DOMAIN}/g" > /tmp/installcentos-inventory.erb
 ansible-playbook -i /tmp/installcentos-inventory.erb openshift-ansible/playbooks/byo/config.yml
 
 #################################################################
@@ -62,7 +62,7 @@ ansible-playbook -i /tmp/installcentos-inventory.erb openshift-ansible/playbooks
 ##       an existing username in the system. Also, make sure
 ##       that such user belongs to group docker, like below:
 ##
-##       $ usermod -a -G docker gshipley
+##       $ usermod -a -G docker pritam
 ##
 htpasswd -b /etc/origin/master/htpasswd ${USERNAME} ${PASSWORD}
 #################################################################
