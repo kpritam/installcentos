@@ -2,21 +2,9 @@
 
 ## see: https://www.youtube.com/watch?v=-OOnGK-XeVY
 
-DOMAIN=${DOMAIN:=console.com}
+DOMAIN=${DOMAIN:=xip.io}
 USERNAME=${USERNAME:=pritam}
 PASSWORD=${PASSWORD:=pritam}
-
-
-yum install -y epel-release
-
-yum install -y git wget zile nano net-tools
-yum install -y docker
-yum install -y python-cryptography pyOpenSSL.x86_64
-
-## WORKAROUND as per https://github.com/openshift/openshift-ansible/issues/3111
-## TODO: yum install ansible
-yum install -y "@Development Tools" python2-pip openssl-devel python-devel
-pip install -Iv ansible==2.3.0.0
 
 mkdir -p ~/workspace && cd ~/workspace
 git clone http://github.com/openshift/openshift-ansible
@@ -26,6 +14,10 @@ cat <<EOD > /etc/hosts
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4 openshift openshift.${DOMAIN}
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
 EOD
+
+cat /dev/zero | ssh-keygen -t rsa -q -N ""
+touch ~/.ssh/authorized_keys
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 
 ######################################################################################
 ## THIS IS HIGHLY INSECURE AND ONLY ACCEPTABLE IN DEVELOPMENT
@@ -49,7 +41,7 @@ systemctl restart docker
 systemctl enable docker
 
 cd ~/workspace
-cat installcentos/inventory.erb | sed "s/console.io/${DOMAIN}/g" > /tmp/installcentos-inventory.erb
+cat installcentos/inventory.erb | sed "s/xip.io/${DOMAIN}/g" > /tmp/installcentos-inventory.erb
 ansible-playbook -i /tmp/installcentos-inventory.erb openshift-ansible/playbooks/byo/config.yml
 
 #################################################################
@@ -62,4 +54,5 @@ ansible-playbook -i /tmp/installcentos-inventory.erb openshift-ansible/playbooks
 ##       $ usermod -a -G docker pritam
 ##
 htpasswd -b /etc/origin/master/htpasswd ${USERNAME} ${PASSWORD}
+oc adm policy add-cluster-role-to-user cluster-admin pritam
 #################################################################

@@ -13,16 +13,32 @@ openshift_release=v3.7.0
 openshift_image_tag=v3.7.0-rc.0
 openshift_ansible_branch=release-3.7
 openshift_enable_excluders=false
-openshift_public_hostname=openshift.console.com
+openshift_public_hostname=openshift.xip.io
+openshift_master_default_subdomain=apps.xip.io
 openshift_metrics_install_metrics=true
 openshift_hosted_metrics_deploy=true
 openshift_hosted_metrics_selector='metrics=enabled'
 openshift_hosted_logging_deploy=true
 openshift_disable_check=docker_image_availability,memory_availability,disk_availability,docker_storage,docker_storage_driver
 
+openshift_metrics_storage_kind=nfs
+openshift_metrics_storage_access_modes=['ReadWriteOnce']
+openshift_metrics_storage_nfs_directory=/exports
+openshift_metrics_storage_nfs_options='*(rw,root_squash)'
+openshift_metrics_storage_volume_name=metrics
+openshift_metrics_storage_volume_size=1Gi
+
+
+openshift_logging_storage_kind=nfs
+openshift_logging_storage_access_modes=['ReadWriteOnce']
+openshift_logging_storage_nfs_directory=/exports
+openshift_logging_storage_nfs_options='*(rw,root_squash)'
+openshift_logging_storage_volume_name=logging
+openshift_logging_storage_volume_size=1Gi
+
 openshift_hosted_registry_storage_kind=nfs
 openshift_hosted_registry_storage_access_modes=['ReadWriteMany']
-openshift_hosted_registry_storage_nfs_directory=/exports/registry
+openshift_hosted_registry_storage_nfs_directory=/exports
 openshift_hosted_registry_storage_nfs_options='*(rw,root_squash)'
 openshift_hosted_registry_storage_volume_name=registry
 openshift_hosted_registry_storage_volume_size=1Gi
@@ -39,16 +55,16 @@ ansible_service_broker_image_prefix=openshift/
 ansible_service_broker_registry_url="registry.access.redhat.com"
 ansible_service_broker_registry_user=pritam
 ansible_service_broker_registry_password=pritam
-ansible_service_broker_registry_organization=openshift.console.com
+ansible_service_broker_registry_organization=openshift.xip.io
 
 [masters]
-openshift.console.com openshift_schedulable=true
+openshift.xip.io openshift_schedulable=true
 
 [etcd]
-openshift.console.com
+openshift.xip.io
 
 [nfs]
-openshift.console.com
+openshift.xip.io
 
 [nodes]
-openshift.console.com openshift_node_labels="{'region': 'infra', 'zone': 'default'}" openshift_schedulable=true
+openshift.xip.io openshift_node_labels="{'region': 'infra', 'zone': 'default'}" openshift_schedulable=true
