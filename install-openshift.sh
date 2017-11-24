@@ -27,9 +27,6 @@ cat <<EOD > /etc/hosts
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
 EOD
 
-cat /dev/zero | ssh-keygen -t rsa -q -N ""
-ssh-copy-id root@openshift.${DOMAIN}
-
 ######################################################################################
 ## THIS IS HIGHLY INSECURE AND ONLY ACCEPTABLE IN DEVELOPMENT
 echo 'INSECURE_REGISTRY="--insecure-registry 172.30.0.0/16"' >> /etc/sysconfig/docker

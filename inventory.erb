@@ -2,6 +2,7 @@
 masters
 nodes
 etcd
+nfs
 
 [OSEv3:vars]
 ansible_ssh_user=root
@@ -19,10 +20,34 @@ openshift_hosted_metrics_selector='metrics=enabled'
 openshift_hosted_logging_deploy=true
 openshift_disable_check=docker_image_availability,memory_availability,disk_availability,docker_storage,docker_storage_driver
 
+openshift_hosted_registry_storage_kind=nfs
+openshift_hosted_registry_storage_access_modes=['ReadWriteMany']
+openshift_hosted_registry_storage_nfs_directory=/exports/registry
+openshift_hosted_registry_storage_nfs_options='*(rw,root_squash)'
+openshift_hosted_registry_storage_volume_name=registry
+openshift_hosted_registry_storage_volume_size=1Gi
+
+openshift_hosted_etcd_storage_kind=nfs
+openshift_hosted_etcd_storage_nfs_options="*(rw,root_squash,sync,no_wdelay)"
+openshift_hosted_etcd_storage_nfs_directory=/opt/osev3-etcd 
+openshift_hosted_etcd_storage_volume_name=etcd-vol2 
+openshift_hosted_etcd_storage_access_modes=["ReadWriteOnce"]
+openshift_hosted_etcd_storage_volume_size=1G
+openshift_hosted_etcd_storage_labels={'storage': 'etcd'}
+
+ansible_service_broker_image_prefix=openshift/
+ansible_service_broker_registry_url="registry.access.redhat.com"
+ansible_service_broker_registry_user=pritam
+ansible_service_broker_registry_password=pritam
+ansible_service_broker_registry_organization=openshift.console.com
+
 [masters]
 openshift.console.com openshift_schedulable=true
 
 [etcd]
+openshift.console.com
+
+[nfs]
 openshift.console.com
 
 [nodes]
