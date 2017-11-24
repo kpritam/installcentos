@@ -18,4 +18,6 @@ docker pull docker.io/ansibleplaybookbundle/ansible-service-broker:latest
 
 docker pull quay.io/coreos/etcd:latest
 docker pull registry.fedoraproject.org/f26/etcd:latest
+
+yum install -y subscription-manager
 docker pull registry.access.redhat.com/rhel7/etcd:latest
