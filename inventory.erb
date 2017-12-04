@@ -19,11 +19,11 @@ openshift_logging_install_logging=true
 openshift_hosted_prometheus_deploy=true
 openshift_disable_check=docker_image_availability,memory_availability,disk_availability,docker_storage,docker_storage_driver
 
-openshift_metrics_hawkular_limits_memory: 0.5G
-openshift_metrics_hawkular_requests_memory: 0.5G
-openshift_metrics_heapster_limits_memory: 0.5G
-openshift_metrics_heapster_requests_memory: 0.5G
-openshift_logging_es_ops_memory_limit: 1Gi
+openshift_metrics_hawkular_limits_memory=0.5G
+openshift_metrics_hawkular_requests_memory=0.5G
+openshift_metrics_heapster_limits_memory=0.5G
+openshift_metrics_heapster_requests_memory=0.5G
+openshift_logging_es_ops_memory_limit=1Gi
 
 openshift_metrics_storage_kind=nfs
 openshift_metrics_storage_access_modes=['ReadWriteOnce']
