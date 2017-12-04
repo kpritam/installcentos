@@ -2,7 +2,7 @@
 
 ## see: https://www.youtube.com/watch?v=-OOnGK-XeVY
 
-DOMAIN=${DOMAIN:=xip.io}
+DOMAIN=${DOMAIN:=openshift.tmt.org}
 USERNAME=${USERNAME:=pritam}
 PASSWORD=${PASSWORD:=pritam}
 
@@ -11,7 +11,7 @@ git clone http://github.com/openshift/openshift-ansible
 git clone http://github.com/kpritam/installcentos
 
 cat <<EOD > /etc/hosts
-127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4 openshift openshift.${DOMAIN}
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4 openshift ${DOMAIN}
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
 EOD
 
@@ -41,7 +41,7 @@ systemctl restart docker
 systemctl enable docker
 
 cd ~/workspace
-cat installcentos/inventory.erb | sed "s/xip.io/${DOMAIN}/g" > /tmp/installcentos-inventory.erb
+cat installcentos/inventory.erb | sed "s/openshift.tmt.org/${DOMAIN}/g" > /tmp/installcentos-inventory.erb
 ansible-playbook -i /tmp/installcentos-inventory.erb openshift-ansible/playbooks/byo/config.yml
 
 #################################################################

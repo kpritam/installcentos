@@ -9,17 +9,21 @@ ansible_ssh_user=root
 openshift_deployment_type=origin
 openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/master/htpasswd'}]
 containerized=true
-openshift_release=v3.7.0
-openshift_image_tag=v3.7.0-rc.0
-openshift_ansible_branch=release-3.7
+openshift_release=v3.8.0
+openshift_image_tag=v3.8.0-alpha.1
 openshift_enable_excluders=false
-openshift_public_hostname=openshift.xip.io
-openshift_master_default_subdomain=apps.xip.io
-openshift_metrics_install_metrics=true
-openshift_hosted_metrics_deploy=true
-openshift_hosted_metrics_selector='metrics=enabled'
-openshift_hosted_logging_deploy=true
+openshift_public_hostname=openshift.tmt.org
+openshift_master_default_subdomain="{{ lookup('env', 'RHCI_ocp_node1_IP') }}.xip.io"
+openshift_metrics_install_metrics=true  
+openshift_logging_install_logging=true
+openshift_hosted_prometheus_deploy=true
 openshift_disable_check=docker_image_availability,memory_availability,disk_availability,docker_storage,docker_storage_driver
+
+openshift_metrics_hawkular_limits_memory: 0.5G
+openshift_metrics_hawkular_requests_memory: 0.5G
+openshift_metrics_heapster_limits_memory: 0.5G
+openshift_metrics_heapster_requests_memory: 0.5G
+openshift_logging_es_ops_memory_limit: 1Gi
 
 openshift_metrics_storage_kind=nfs
 openshift_metrics_storage_access_modes=['ReadWriteOnce']
@@ -28,13 +32,22 @@ openshift_metrics_storage_nfs_options='*(rw,root_squash)'
 openshift_metrics_storage_volume_name=metrics
 openshift_metrics_storage_volume_size=1Gi
 
-
 openshift_logging_storage_kind=nfs
 openshift_logging_storage_access_modes=['ReadWriteOnce']
 openshift_logging_storage_nfs_directory=/exports
 openshift_logging_storage_nfs_options='*(rw,root_squash)'
 openshift_logging_storage_volume_name=logging
 openshift_logging_storage_volume_size=1Gi
+openshift_logging_storage_labels={'storage': 'logging'}
+
+openshift_prometheus_storage_kind=nfs
+openshift_prometheus_storage_access_modes=['ReadWriteOnce']
+openshift_prometheus_storage_nfs_directory=/exports
+openshift_prometheus_storage_nfs_options='*(rw,root_squash)'
+openshift_prometheus_storage_volume_name=prometheus
+openshift_prometheus_storage_volume_size=1Gi
+openshift_prometheus_storage_labels={'storage': 'prometheus'}
+openshift_prometheus_storage_type='pvc'
 
 openshift_hosted_registry_storage_kind=nfs
 openshift_hosted_registry_storage_access_modes=['ReadWriteMany']
@@ -51,20 +64,15 @@ openshift_hosted_etcd_storage_access_modes=["ReadWriteOnce"]
 openshift_hosted_etcd_storage_volume_size=1G
 openshift_hosted_etcd_storage_labels={'storage': 'etcd'}
 
-ansible_service_broker_image_prefix=openshift/
-ansible_service_broker_registry_url="registry.access.redhat.com"
-ansible_service_broker_registry_user=pritam
-ansible_service_broker_registry_password=pritam
-ansible_service_broker_registry_organization=openshift.xip.io
 
 [masters]
-openshift.xip.io openshift_schedulable=true
+openshift.tmt.org openshift_schedulable=true
 
 [etcd]
-openshift.xip.io
+openshift.tmt.org
 
 [nfs]
-openshift.xip.io
+openshift.tmt.org
 
 [nodes]
-openshift.xip.io openshift_node_labels="{'region': 'infra', 'zone': 'default'}" openshift_schedulable=true
+openshift.tmt.org openshift_node_labels="{'region': 'infra', 'zone': 'default'}" openshift_schedulable=true
